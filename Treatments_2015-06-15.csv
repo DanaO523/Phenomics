@@ -1,0 +1,53 @@
+Treatment,Identifier
+Glucose_F,F
+Galactose_F,F
+Sucrose_F,F
+Maltose_F,F
+Lactose_F,F
+Raffinose_F,F
+Trehalose_F,F
+Glucose,C
+Inulin,C
+Sucrose,C
+Raffinose,C
+Melibiose,C
+Galactose,C
+Lactose,C
+Trehalose,C
+Maltose,C
+Melezitose,C
+Methyl-?-D-glucoside,C
+Soluble Starch,C
+Cellobiose,C
+Salicin,C
+L-Sorbose,C
+L-Rhamnose,C
+D-Xylose,C
+L-Arabinose,C
+D-Arabinose,C
+D-Ribose,C
+Methanol,C
+Ethanol,C
+Glycerol,C
+Erythritol,C
+Ribitol,C
+Galactitol,C
+D-Mannitol,C
+D-Glucitol,C
+myo-Inositol,C
+DL-Lactate,C
+Succinate,C
+Citrate,C
+D-Gluconate,N
+D-Glucosamine,N
+Nitrate,N
+Vitamin-free,V
+2-Keto-D-gluconate,N
+Starch formation,M
+Growth at 19°C,T
+Growth at 25°C,T
+Growth at 30°C,T
+Growth at 35°C,T
+Growth at 37°C,T
+Growth at 40°C,T
+Growth at 45°C,T

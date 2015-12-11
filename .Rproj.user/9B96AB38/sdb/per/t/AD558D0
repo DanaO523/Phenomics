@@ -1,0 +1,22 @@
+{
+    "contents" : "",
+    "created" : 1449764178898.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "AD558D0",
+    "lastKnownWriteTime" : 3835147350504911152,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "caption" : "Correlation_df",
+        "contentUrl" : "content?title=Correlation_df&file=6b657fafdea3459bbbe5a798e2b349ca.htm",
+        "displayedObservations" : 1000,
+        "displayedVariables" : 7,
+        "totalObservations" : 2401,
+        "variables" : 7
+    },
+    "source_on_save" : false,
+    "type" : "r_dataframe"
+}
