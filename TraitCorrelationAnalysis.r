@@ -371,6 +371,8 @@ dev.off()
 pvClustMatrix = GrowthQual_m[,3:ncol(GrowthQual_m)]
 Treatment_dendro = pvclust(pvClustMatrix, nboot = 1000, method.dist = "euclidean", method.hclust = "ward")
 
+Correlation_dendro = pvclust(CorrelationMatrix, nboot = 1000, method.dist = "euclidean", method.hclust = "ward")
+# Hello!!
 ######### Calculate the number of correlated and anti-correlated traits per species #########
 
 # Calculates the number correlated traits within a species
@@ -414,5 +416,56 @@ ggsave(paste("CorrAntCorrTraitCountScatter_", Sys.Date(), ".pdf", sep = "")) # S
 #############################################################
 GrowthQualGenera_m = read.csv("GrowthQual_mGenus.csv", header = TRUE)
 GeneraSplit = splitBy("X", GrowthQualGenera_m)
-
-GeneraCorr = data.frame()
+#START HERE
+pdf("GeneraCorrelation_hmap.pdf")
+GeneraCorr_list = list()
+for(i in 1:length(GeneraSplit)){
+	GeneraCorr_list[[i]]= list()
+	if(nrow(GeneraSplit[[i]]) >  3){
+		GeneraCorrelationMatrix = matrix(0, nrow = length(treatments), ncol = length(treatments))
+		colnames(GeneraCorrelationMatrix) = treatments
+		rownames(GeneraCorrelationMatrix) = treatments
+		GeneraCorrelation_df = data.frame(Treatment_A = character(), Treatment_B = character(), TValue = numeric(), Df = numeric(), CorrValue = numeric(), Pvalue = numeric())
+		for(j in 2:ncol(GeneraSplit[[i]])){
+			for(k in 2:ncol(GeneraSplit[[i]])){
+				temp_df = cbind(GeneraSplit[[i]][,j],GeneraSplit[[i]][,k])
+				m = 1
+				if(length(which(is.na(temp_df[,1]) == TRUE)) /nrow(temp_df) < .5 & length(which(is.na(temp_df[,2]) == TRUE))/nrow(temp_df) < 0.5){
+					temp = cor.test(as.numeric(GeneraSplit[[i]][,j]), as.numeric(GeneraSplit[[i]][,k]))
+					GeneraCorrelationMatrix[ which ( colnames( GeneraCorrelationMatrix ) == colnames(GeneraSplit[[i]])[j]), which(colnames(GeneraCorrelationMatrix) == colnames(GeneraSplit[[i]])[k])] = temp$estimate[[1]]
+					GeneraCorrelation_df[m, 1] = colnames(GeneraSplit[[i]])[j]
+					GeneraCorrelation_df[m, 2] = colnames(GeneraSplit[[i]])[k]
+					GeneraCorrelation_df[m, 3] = temp[[1]][1]
+					GeneraCorrelation_df[m, 4] = temp[[2]][1]
+					GeneraCorrelation_df[m, 5] = temp[[4]][1]
+					GeneraCorrelation_df[m, 6] = temp[[3]][1]
+					m = 1+m 
+				}else{
+					GeneraCorrelationMatrix[ which ( colnames( GeneraCorrelationMatrix ) == colnames(GeneraSplit[[i]])[j]), which(colnames(GeneraCorrelationMatrix) == colnames(GeneraSplit[[i]])[k])] = NA
+					GeneraCorrelation_df[m, 1] = colnames(GeneraSplit[[i]])[j]
+					GeneraCorrelation_df[m, 2] = colnames(GeneraSplit[[i]])[k]
+					GeneraCorrelation_df[m, 3] = NA
+					GeneraCorrelation_df[m, 4] = NA
+					GeneraCorrelation_df[m, 5] = NA
+					GeneraCorrelation_df[m, 6] = NA
+					m = 1+m 
+				}
+			}
+		}
+		if(nrow(GeneraCorrelation_df) > 0){
+			Genera_BHCorrection = p.adjust(GeneraCorrelation_df[,6], method = "BH")
+			GeneraCorrelation_df=cbind(GeneraCorrelation_df, Genera_BHCorrection)
+			GeneraCorr_list[[i]]$Genera = names(GeneraSplit)[i]
+			GeneraCorr_list[[i]]$CorrMatrix = GeneraCorrelationMatrix
+			COLORS = c("#8EA6CC","#325A99","white", "#EEFEFF","#FFC4AE", "#CCAEAA")
+			pheatmap(GeneraCorrelationMatrix, clustering_distance_rows = "euclidean", cluster_cols = FALSE, clustering_method = "ward", border_color = "black", cellheight = 8, cellwidth = 8,color = colorRampPalette(COLORS)(100), main = names(GeneraSplit)[i])
+			GeneraCorr_list[[i]]$Correlation_df = GeneraCorrelation_df
+		}else{
+			GeneraCorr_list[[i]]$Genera = names(GeneraSplit)[i]
+			GeneraCorr_list[[i]]$CorrMatrix = "Not enough data"
+			GeneraCorr_list[[i]]$Correlation_df = "Not enough data"
+		}
+	}
+}
+dev.off()
+	
